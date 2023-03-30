@@ -57,60 +57,6 @@ const memberSchema= new mongoose.Schema({
   
   // create a model for the data
   const Member = mongoose.model("Member", memberSchema,);
-
-
-
-
-
-
-
-  
-//   // parse incoming form data
-//   app.use(bodyParser.urlencoded({ extended: false }));
-
-
-
-//   const Member1 = mongoose.model('Member');
-//   const membersCollection = Member1.collection;
-
-// //   const membersCollection = mongoose.connection.db.collection('members');
-
-//   app.get('/getlist', (req, res) => {
-//     membersCollection.find().toArray(function(err, members) {
-//       if (err) throw err;
-  
-//       const addresses = [];
-  
-//       members.forEach(member => {
-//         const api_url = `https://api.tomtom.com/search/2/reverseGeocode/${member.LocationL},${member.LocationA}.json?key=FINkRW9vyyAfiAXdcsM62UKl64oS17Qj&radius=100`;
-  
-//         fetch(api_url)
-//           .then(response => response.json())
-//           .then(data => {
-//             const address = data.address.freeformAddress;
-//             console.log(address);
-//             member.address = address;
-  
-//             // Save the updated member object to the database
-//             membersCollection.save(member);
-  
-//             // Add the address to the list
-//             addresses.push(address);
-  
-//             // If all addresses have been retrieved, send the response
-//             if (addresses.length === members.length) {
-//               res.send(addresses);
-//             }
-//           })
-//           .catch(error => console.log(error));
-//       });
-//     });
-//   });
-  
-
-
-
-
 const fetch = require('node-fetch');
 
 const membersCollection = mongoose.connection.collection('members');
@@ -147,15 +93,6 @@ app.get('/getlist', async (req, res) => {
       res.send('An error occurred');
     }
   });
-  
-
-
-
-
-
-
-
-
 
   // handle form submission
   app.post('/submit1', (req, res) => {
@@ -200,6 +137,53 @@ app.get('/getlist', async (req, res) => {
   // parse incoming form data
   app.use(bodyParser.urlencoded({ extended: false }));
 
+
+
+
+  const Needy = mongoose.model("Needy", helpSchema,);
+  const helpCollection = mongoose.connection.collection('helps');
+  app.get('/getneedy', async (req, res) => {
+      try {
+        // Retrieve all documents from the members collection
+        const helps = await helpCollection.find().toArray();
+    
+        // Loop over each document and make a request to the TomTom API
+        const memberAddresses = [];
+        for (const help of helps) {
+          const lon = help.LocationL;
+          const lat = help.LocationA;
+          const apiKey = 'FINkRW9vyyAfiAXdcsM62UKl64oS17Qj';
+          const radius = 100;
+        
+          const apiUrl = `https://api.tomtom.com/search/2/reverseGeocode/${lat},${lon}.json?key=${apiKey}&radius=${radius}`;
+    
+          // Make the API request and add the address to the memberAddresses array
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+          if (!data.addresses || data.addresses.length === 0) {
+            console.log('No address found for', lat, lon);
+          } else {
+            const address = data.addresses[0].address.freeformAddress;
+          //   console.log(data.addresses[0].address.freeformAddress);
+            memberAddresses.push({ name: help.name, contact: help.contact, address: address });
+          }
+        }
+    
+        // Render the HTML template with the memberAddresses array passed as data
+        res.render('getneedy', { memberAddresses: memberAddresses });
+      } catch (error) {
+        console.log(error);
+        res.send('An error occurred');
+      }
+    });
+
+
+
+
+
+
+
+
   
   
   // handle form submission
@@ -241,11 +225,62 @@ app.get('/getlist', async (req, res) => {
     LocationA: String
   });
   
-  // create a model for the data
+  // create a model for the data getdonor
   const Donate = mongoose.model("Donate", donateSchema,);
-  
+
+
   // parse incoming form data
   app.use(bodyParser.urlencoded({ extended: false }));
+
+
+
+// get doners 
+
+const Donor = mongoose.model("Donor", donateSchema,);
+const donerCollection = mongoose.connection.collection('donates');
+app.get('/getdonor', async (req, res) => {
+    try {
+      // Retrieve all documents from the members collection
+      const donates = await donerCollection.find().toArray();
+  
+      // Loop over each document and make a request to the TomTom API
+      const memberAddresses = [];
+      for (const doner of donates) {
+        const lon = doner.LocationL;
+        const lat = doner.LocationA;
+        const apiKey = 'FINkRW9vyyAfiAXdcsM62UKl64oS17Qj';
+        const radius = 100;
+      
+        const apiUrl = `https://api.tomtom.com/search/2/reverseGeocode/${lat},${lon}.json?key=${apiKey}&radius=${radius}`;
+  
+        // Make the API request and add the address to the memberAddresses array
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        if (!data.addresses || data.addresses.length === 0) {
+          console.log('No address found for', lat, lon);
+        } else {
+          const address = data.addresses[0].address.freeformAddress;
+        //   console.log(data.addresses[0].address.freeformAddress);
+          memberAddresses.push({ name: doner.name, item: doner.item,contact: doner.contact, address: address });
+        }
+      }
+  
+      // Render the HTML template with the memberAddresses array passed as data
+      res.render('getdonor', { memberAddresses: memberAddresses });
+    } catch (error) {
+      console.log(error);
+      res.send('An error occurred');
+    }
+  });
+
+
+
+
+
+
+
+
+
 
   
   
