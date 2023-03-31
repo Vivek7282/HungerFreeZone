@@ -1,0 +1,68 @@
+
+<%- include('header'); -%>
+
+
+
+
+
+
+
+
+
+
+   
+
+      
+      
+     
+   
+
+
+<head>
+  <title>Member Addresses</title>
+  <style>
+    /* CSS styles for your data */
+  </style>
+</head>
+
+
+
+<body>
+  <section id="hero" class="d-flex align-items-center">
+    <div class="container position-relative" data-aos="fade-up" data-aos-delay="100">
+      <div class="row justify-content-center">
+        <!-- <div class="col-xl-7 col-lg-9 text-center"> -->
+        
+  <h1>free food address Addresses for Today</h1>
+  
+    <% memberAddresses.forEach(function(free) { %>
+      
+
+
+        <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="300">
+          <div class="icon-box">
+            <!-- <div class="icon"><i class="ri-palette-line"></i></div> -->
+            <h4 class="title"><a href=""><%= free.type %></a></h4>
+            <p class="description"><strong>contact:</strong> <%= free.contact %></p>
+            <p class="description"><strong>pincode :</strong> <%= free.pin %></p> 
+            <p class="description"><strong>Date :</strong> <%= free.date %></p> 
+            <p class="description">Address:</strong> <%= free.address %></p>
+          </div>
+        </div>
+  
+
+
+
+
+        
+    
+    <% }); %>
+  </div>
+</div>
+</section><!-- End Hero -->
+    
+  
+</body>
+
+
+<%- include('footer'); -%>

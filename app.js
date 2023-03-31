@@ -40,6 +40,9 @@ app.get("/Contact_Form_with_Fancy_Header_and_Footer2.ejs", function(req, res){
 app.get("/admin.ejs", function(req, res){
     res.render("admin.ejs");
 });
+app.get("/freefood.ejs", function(req, res){
+    res.render("freefood.ejs");
+});
 
 app.get("/listofteam.ejs", function(req, res){
     res.render("listofteam.ejs");
@@ -301,6 +304,115 @@ app.get('/getdonor', async (req, res) => {
   
     // save the message to the database
     donate.save()
+      .then(item => {
+        res.redirect('/');
+      })
+      .catch(err => {
+        res.status(400).send("unable to save to database");
+      });
+  });
+  
+
+
+
+
+
+
+
+
+
+
+
+  const freefoodSchema = new mongoose.Schema({
+    foodtype: String,
+    address: String,
+    contact: String,
+    pincode: String,
+   
+   date: Date,
+    // photo: Buffer, // Change the data type to Buffer
+    LocationL: String,
+    LocationA: String
+  });
+  
+  // create a model for the data getdonor
+  const FreeFood = mongoose.model("FreeFood", freefoodSchema,);
+
+
+
+
+  // parse incoming form data
+  app.use(bodyParser.urlencoded({ extended: false }));
+
+
+
+
+  const freefood = mongoose.model("freefood", freefoodSchema,);
+  const freeCollection = mongoose.connection.collection('freefoods');
+  app.get('/getfreefood', async (req, res) => {
+      try {
+        // Retrieve all documents from the members collection
+        const frees = await freeCollection.find().toArray();
+    
+        // Loop over each document and make a request to the TomTom API
+        const memberAddresses = [];
+        for (const free of frees) {
+          const lat = free.LocationL;
+          const lon = free.LocationA;
+          const apiKey = 'FINkRW9vyyAfiAXdcsM62UKl64oS17Qj';
+          const radius = 100;
+        
+          const apiUrl = `https://api.tomtom.com/search/2/reverseGeocode/${lat},${lon}.json?key=${apiKey}&radius=${radius}`;
+    
+          // Make the API request and add the address to the memberAddresses array
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+          if (!data.addresses || data.addresses.length === 0) {
+            console.log('No address found for', lat, lon);
+          } else {
+            const address = data.addresses[0].address.freeformAddress;
+          //   console.log(data.addresses[0].address.freeformAddress);
+            memberAddresses.push({ type: free.foodtype, pin: free.pincode,contact: free.contact,date: free.date, address: address });
+          }
+        }
+    
+        // Render the HTML template with the memberAddresses array passed as data
+        res.render('getfreefood', { memberAddresses: memberAddresses });
+      } catch (error) {
+        console.log(error);
+        res.send('An error occurred');
+      }
+    });
+  
+
+
+
+
+
+
+
+
+
+  
+  // handle form submission
+  app.post('/submit4', (req, res) => {
+    const currentDate = new Date();
+    // read the photo file as binary data
+    // const photoData = fs.readFileSync(req.body.photo);
+  
+    const free = new FreeFood({
+      foodtype: req.body.type,
+      address: req.body.address,
+      pincode: req.body.pin,
+      date: currentDate,
+    //   photo: photoData, // assign the binary data to the photo field
+      contact: req.body.contact,
+      LocationL: req.body.Lo,
+      LocationA: req.body.La
+    });
+  
+    // save the message to the database
+    free.save()
       .then(item => {
         res.redirect('/');
       })
