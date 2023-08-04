@@ -31,6 +31,9 @@ app.get("/", function(req, res){
 app.get("/Contact_Form_with_Fancy_Header_and_Footer.ejs", function(req, res){
     res.render("Contact_Form_with_Fancy_Header_and_Footer.ejs");
 });
+
+   
+
 app.get("/Contact_Form_with_Fancy_Header_and_Footer1.ejs", function(req, res){
     res.render("Contact_Form_with_Fancy_Header_and_Footer1.ejs");
 });
@@ -42,6 +45,10 @@ app.get("/admin.ejs", function(req, res){
 });
 app.get("/freefood.ejs", function(req, res){
     res.render("freefood.ejs");
+});
+app.get("/getfreefood1.ejs", function(req, res){
+  console.log("Yup")
+  res.render("getfreefood1.ejs");
 });
 
 app.get("/listofteam.ejs", function(req, res){
@@ -387,8 +394,7 @@ app.get('/getdonor', async (req, res) => {
 
 
 
-
-
+    
 
 
 
