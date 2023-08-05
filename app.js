@@ -47,7 +47,6 @@ app.get("/freefood.ejs", function(req, res){
     res.render("freefood.ejs");
 });
 app.get("/getfreefood1.ejs", function(req, res){
-  console.log("Yup")
   res.render("getfreefood1.ejs");
 });
 
@@ -391,7 +390,37 @@ app.get('/getdonor', async (req, res) => {
       }
     });
   
+    
 
+    app.get('/freefoods', async (req, res) => {
+      console.log("Hi");
+      try {
+        console.log("Hi1");
+        const freeFoods = await freeCollection.find().toArray();
+        const geojsonFeatures = freeFoods.map(freeFood => ({
+          type: 'Feature',
+          properties: {
+            description: `Food Type: ${freeFood.foodtype}<br>Address: ${freeFood.address}`
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [freeFood.LocationA, freeFood.LocationL]
+          }
+        }));
+        console.log("Hi2");
+        const geojson = {
+          type: 'FeatureCollection',
+          features: geojsonFeatures
+        };
+    
+        res.json(geojson);
+      } catch (err) {
+        console.error('Error fetching free foods data:', err);
+        res.status(500).json({ error: 'Error fetching free foods data' });
+      }
+    });
+    
+  
 
 
     
@@ -426,8 +455,9 @@ app.get('/getdonor', async (req, res) => {
         res.status(400).send("unable to save to database");
       });
   });
+ 
   
-
+  
 
 
 
