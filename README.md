@@ -11,7 +11,7 @@ Express js,
 MongoDB,
 
 HungerFreeZone
-HungerFreeZone is a Node.js based project that aims to reduce hunger by creating a platform where people can easily connect with others to get the help they need.
+Developed a robust "Online Restaurant Table Booking Sys- tem" from inception to deployment, utilizing the MERN (MongoDB, Express.js, React, Node.js) stack.
 
 Getting Started
 Prerequisites,
