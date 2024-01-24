@@ -3,14 +3,12 @@ A project for GDSC
 
 team Members:-
 Vivek Kumar
-Monisha Gupta
-Ankita Kumari
+Tanish Kumar
 
 Tech Stacks:-
 Node js,
 Express js,
 MongoDB,
-Map Api.
 
 HungerFreeZone
 HungerFreeZone is a Node.js based project that aims to reduce hunger by creating a platform where people can easily connect with others to get the help they need.
